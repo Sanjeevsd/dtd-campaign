@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Eye, EyeOff, Save, Send } from "lucide-react";
-import { CampaignFormData } from "../types/campaign";
+import { Send } from "lucide-react";
+import { CampaignFormData, CampaignImage } from "../types/campaign";
+import ImageUpload from "./ImageUpload";
 
 interface CampaignFormProps {
   onSave: (data: CampaignFormData) => void;
@@ -9,7 +10,6 @@ interface CampaignFormProps {
 }
 
 const CampaignForm: React.FC<CampaignFormProps> = ({
-  onSave,
   onNext,
   initialData = {},
 }) => {
@@ -17,8 +17,8 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
     fromName: initialData.fromName || "",
     subject: initialData.subject || "",
     htmlTemplate: initialData.htmlTemplate || "",
+    images: initialData.images || [],
   });
-  const [showPreview, setShowPreview] = useState(false);
   const [errors, setErrors] = useState<Partial<CampaignFormData>>({});
 
   const validateForm = (): boolean => {
@@ -36,14 +36,14 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
       newErrors.htmlTemplate = "HTML template is required";
     }
 
+    // Images are optional, so no validation required
+    // But you could add validation here if needed:
+    // if (formData.images.length === 0) {
+    //   newErrors.images = "At least one image is required";
+    // }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSave = () => {
-    if (validateForm()) {
-      onSave(formData);
-    }
   };
 
   const handleNext = () => {
@@ -52,7 +52,10 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
     }
   };
 
-  const handleInputChange = (field: keyof CampaignFormData, value: string) => {
+  const handleInputChange = (
+    field: keyof CampaignFormData,
+    value: string | CampaignImage[]
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
@@ -109,6 +112,14 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
               )}
             </div>
 
+            {/* Image Upload Section */}
+            <ImageUpload
+              images={formData.images}
+              onImagesChange={(images) => handleInputChange("images", images)}
+              maxFiles={10}
+              maxFileSize={5}
+            />
+
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label
@@ -134,7 +145,15 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
                 id="htmlTemplate"
                 value={formData.htmlTemplate}
                 onChange={(e) =>
-                  handleInputChange("htmlTemplate", e.target.value)
+                  handleInputChange(
+                    "htmlTemplate",
+                    e.target.value.replace(
+                      "<title></title>",
+                      `<title></title>
+	 <meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">`
+                    )
+                  )
                 }
                 rows={12}
                 className="w-full px-3 py-2 bg-zinc-800 border border-zinc-600 rounded-md text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent font-mono text-sm"
@@ -148,34 +167,7 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
             </div>
           </div>
 
-          {/* Preview Panel */}
-          {showPreview && (
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-4">
-                Email Preview
-              </h3>
-              <div className="bg-white rounded-lg p-4 border border-zinc-600 max-h-96  w-[320px] overflow-y-auto">
-                <div className="border-b border-zinc-200 pb-2 mb-4">
-                  <p className="text-sm text-zinc-600">
-                    From: {formData.fromName || "From Name"}
-                  </p>
-                  <p className="text-sm text-zinc-600">
-                    Subject: {formData.subject || "Subject Line"}
-                  </p>
-                </div>
-                <div className="w-[320px]">
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html:
-                        formData.htmlTemplate ||
-                        '<p class="text-zinc-500">HTML template preview will appear here...</p>',
-                    }}
-                    className="prose w-[320px]"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
+          {/* Note: Preview functionality can be re-added later if needed */}
         </div>
 
         <div className="flex justify-between mt-8">

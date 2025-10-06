@@ -13,6 +13,7 @@ const CreateCampaign: React.FC = () => {
     fromName: "",
     subject: "",
     htmlTemplate: "",
+    images: [],
   });
 
   const handleSave = (data: CampaignFormData) => {
@@ -27,18 +28,39 @@ const CreateCampaign: React.FC = () => {
   };
 
   const handleSendTest = async (emails: string[]) => {
-    // Here you would call your backend API to send test emails
-    console.log("Sending test emails to:", emails);
-    console.log("Campaign data:", campaignData);
+    try {
+      // Here you would call your backend API to send test emails
+      console.log("Sending test emails to:", emails);
+      console.log("Campaign data:", campaignData);
 
-    await axios.post("https://admin.aajproperty.com/api/v3/admin/send-test", {
-      emails,
-      subject: campaignData.subject,
-      fromName: campaignData.fromName,
-      htmlTemplate: campaignData.htmlTemplate,
-    });
+      // Create FormData to handle file uploads
+      const formData = new FormData();
+      // formData.append("emails", JSON.stringify(emails));
+      // formData.append("subject", campaignData.subject);
+      // formData.append("fromName", campaignData.fromName);
+      // formData.append("htmlTemplate", campaignData.htmlTemplate);
 
-    return { success: true };
+      // Append images if any
+      campaignData.images.forEach((image) => {
+        formData.append(`emailpics`, image.file);
+      });
+      formData.append("data", JSON.stringify({ ...campaignData, emails }));
+
+      await axios.post(
+        "https://admin.aajproperty.com/api/v3/admin/send-test",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error sending test emails:", error);
+      return { success: false, error: "Failed to send test emails" };
+    }
   };
 
   const handleProceedToSend = () => {
@@ -46,27 +68,38 @@ const CreateCampaign: React.FC = () => {
   };
 
   const handleSendCampaign = async () => {
-    // Here you would call your backend API to send the campaign
-    console.log("Sending campaign:", campaignData);
-    //  subject: { type: String, required: true },
-    // fromName: { type: String, required: true },
-    // htmlTemplate: { type: String, required: true },
-    // sentAt: { type: String },
-    // status: {
-    //   type: String,
-    //   enum: ["draft", "testing", "sent"],
-    //   default: "draft",
-    //   required: true,
-    // },
-    await axios.post("https://admin.aajproperty.com/api/v3/admin/dtd-create", {
-      subject: campaignData.subject,
-      fromName: campaignData.fromName,
-      htmlTemplate: campaignData.htmlTemplate,
-      sentAt: new Date().toISOString(),
-      status: "sent",
-    });
+    try {
+      // Here you would call your backend API to send the campaign
+      console.log("Sending campaign:", campaignData);
 
-    return { success: true };
+      // Create FormData to handle file uploads
+      const formData = new FormData();
+      formData.append("subject", campaignData.subject);
+      formData.append("fromName", campaignData.fromName);
+      formData.append("htmlTemplate", campaignData.htmlTemplate);
+      formData.append("sentAt", new Date().toISOString());
+      formData.append("status", "sent");
+
+      // Append images if any
+      campaignData.images.forEach((image, index) => {
+        formData.append(`images[${index}]`, image.file);
+      });
+
+      await axios.post(
+        "https://admin.aajproperty.com/api/v3/admin/dtd-create",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error sending campaign:", error);
+      return { success: false, error: "Failed to send campaign" };
+    }
   };
 
   const handleComplete = () => {
@@ -76,6 +109,7 @@ const CreateCampaign: React.FC = () => {
       fromName: "",
       subject: "",
       htmlTemplate: "",
+      images: [],
     });
   };
 
