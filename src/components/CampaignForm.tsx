@@ -147,12 +147,57 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
                 onChange={(e) =>
                   handleInputChange(
                     "htmlTemplate",
-                    e.target.value.replace(
-                      "<title></title>",
-                      `<title></title>
+                    e.target.value
+                      .replace(
+                        "<title></title>",
+                        `<title></title>
 	 <meta name="color-scheme" content="light">
 <meta name="supported-color-schemes" content="light">`
-                    )
+                      )
+                      .replace(
+                        "</body>",
+                        ` <table
+        align="center"
+        width="100%"
+        data-id="react-email-row"
+        style="margin-top: 8px"
+        role="presentation"
+        cellspacing="0"
+        cellpadding="0"
+        border="0"
+      >
+        <tbody style="width: 100%">
+          <tr style="width: 100%">
+            <td data-id="__react-email-column" style="text-align: center">
+              <span
+                style="
+                  font-family: Helvetica;
+                  font-size: 12px;
+                  font-weight: 400;
+                  line-height: 18px;
+                  color: #000;
+                "
+                >If you no longer wish to receive<br />
+                Newsletter please
+                <a
+                  href="https://unsub.mydowntown-dubai.com/unsubscribe?email={{email}}"
+                  style="
+                    font-family: Helvetica;
+                    font-size: 12px;
+                    font-weight: 400;
+                    line-height: 18px;
+                    color: #000;
+                  "
+                  >click here.</a
+                ></span
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <img data-id="react-email-img"  src="https://admin.aajproperty.com/api/v1/newsletter/tracking-email?email=em&domain=${formData.subject}&region=${formData.subject}" width="1" height="1" style="display:block;outline:none;border:none;text-decoration:none" />
+      </body>`
+                      )
                   )
                 }
                 rows={12}

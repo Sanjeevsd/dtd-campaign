@@ -47,7 +47,7 @@ const CreateCampaign: React.FC = () => {
       formData.append("data", JSON.stringify({ ...campaignData, emails }));
 
       await axios.post(
-        "https://admin.aajproperty.com/api/v3/admin/send-test",
+        "http://localhost:4444/api/v3/admin/send-test",
         formData,
         {
           headers: {
@@ -74,19 +74,22 @@ const CreateCampaign: React.FC = () => {
 
       // Create FormData to handle file uploads
       const formData = new FormData();
-      formData.append("subject", campaignData.subject);
-      formData.append("fromName", campaignData.fromName);
-      formData.append("htmlTemplate", campaignData.htmlTemplate);
-      formData.append("sentAt", new Date().toISOString());
-      formData.append("status", "sent");
+      formData.append(
+        "data",
+        JSON.stringify({
+          ...campaignData,
+          status: "sent",
+          sentAt: new Date().toISOString(),
+        })
+      );
 
-      // Append images if any
-      campaignData.images.forEach((image, index) => {
-        formData.append(`images[${index}]`, image.file);
-      });
+      // // Append images if any
+      // campaignData.images.forEach((image, index) => {
+      //   formData.append(`images[${index}]`, image.file);
+      // });
 
       await axios.post(
-        "https://admin.aajproperty.com/api/v3/admin/dtd-create",
+        "http://localhost:4444/api/v3/admin/dtd-create",
         formData,
         {
           headers: {
