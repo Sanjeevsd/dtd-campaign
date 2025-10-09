@@ -47,7 +47,7 @@ const CreateCampaign: React.FC = () => {
       formData.append("data", JSON.stringify({ ...campaignData, emails }));
 
       await axios.post(
-        "http://localhost:4444/api/v3/admin/send-test",
+        "https://admin.aajproperty.com/api/v3/admin/send-test",
         formData,
         {
           headers: {
@@ -89,7 +89,7 @@ const CreateCampaign: React.FC = () => {
       // });
 
       await axios.post(
-        "http://localhost:4444/api/v3/admin/dtd-create",
+        "https://admin.aajproperty.com/api/v3/admin/dtd-create",
         formData,
         {
           headers: {
