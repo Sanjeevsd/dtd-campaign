@@ -6,6 +6,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
+import api from "../services/api";
 
 interface User {
   id: string;
@@ -75,13 +76,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         };
       }
 
-      const response = await axios.post(
-        "https://admin.aajproperty.com/api/v3/auth/login-user",
-        {
-          email: email,
-          password: password,
-        }
-      );
+      const response = await api.post("/auth/login-user", {
+        email: email,
+        password: password,
+      });
 
       if (response.data.message === "success") {
         const userData = {

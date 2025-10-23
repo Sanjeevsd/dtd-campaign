@@ -149,8 +149,8 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
                     "htmlTemplate",
                     e.target.value
                       .replace(
-                        "<title></title>",
-                        `<title></title>
+                        "</title>",
+                        `</title>
 	 <meta name="color-scheme" content="light">
 <meta name="supported-color-schemes" content="light">`
                       )

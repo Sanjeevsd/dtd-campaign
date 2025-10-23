@@ -3,7 +3,7 @@ import CampaignForm from "../components/CampaignForm";
 import TestEmail from "../components/TestEmail";
 import SendCampaign from "../components/SendCampaign";
 import { CampaignFormData } from "../types/campaign";
-import axios from "axios";
+import api from "../services/api";
 
 type Step = "create" | "test" | "send";
 
@@ -46,15 +46,11 @@ const CreateCampaign: React.FC = () => {
       });
       formData.append("data", JSON.stringify({ ...campaignData, emails }));
 
-      await axios.post(
-        "https://admin.aajproperty.com/api/v3/admin/send-test",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await api.post("/admin/send-test", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       return { success: true };
     } catch (error) {
@@ -88,15 +84,11 @@ const CreateCampaign: React.FC = () => {
       //   formData.append(`images[${index}]`, image.file);
       // });
 
-      await axios.post(
-        "https://admin.aajproperty.com/api/v3/admin/dtd-create",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await api.post("/admin/dtd-create", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       return { success: true };
     } catch (error) {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import CampaignTracker from "../components/CampaignTracker";
 import { Campaign } from "../types/campaign";
+import api from "../services/api";
 
 // Mock data for demonstration
 const mockCampaigns: Campaign[] = [
@@ -77,15 +78,12 @@ const Campaigns: React.FC = () => {
       setError(null);
 
       // Replace with your actual API endpoint
-      const response = await axios.get(
-        "https://admin.aajproperty.com/api/v3/admin/dtd-list",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Add auth token if needed
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await api.get("/admin/dtd-list", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Add auth token if needed
+          "Content-Type": "application/json",
+        },
+      });
 
       // Assuming the API returns campaigns in response.data.data or response.data
       const campaignsData = response.data.data || response.data;

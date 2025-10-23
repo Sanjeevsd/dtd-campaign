@@ -5,6 +5,7 @@ import Login from "./components/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CreateCampaign from "./pages/CreateCampaign";
 import Campaigns from "./pages/Campaigns";
+import Tracking from "./components/Tracking";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/track" element={<Tracking />} />
           <Route
             path="/"
             element={
