@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Calendar, Mail, Eye, TrendingUp, Search } from "lucide-react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Campaign } from "../types/campaign";
 
 interface CampaignTrackerProps {
@@ -7,272 +7,166 @@ interface CampaignTrackerProps {
 }
 
 const CampaignTracker: React.FC<CampaignTrackerProps> = ({ campaigns }) => {
-  const [filteredCampaigns, setFilteredCampaigns] =
-    useState<Campaign[]>(campaigns);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<"date" | "opened" | "sent">("date");
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    let filtered = campaigns;
+  // Calculate totals including clicks
+  const totalSent = campaigns.reduce(
+    (sum, campaign) => sum + campaign.emailsSent,
+    0
+  );
+  const totalOpened = campaigns.reduce(
+    (sum, campaign) => sum + campaign.emailsOpened,
+    0
+  );
+  const totalClicks = campaigns.reduce(
+    (sum, campaign) => sum + (campaign.emailsClicked || 0),
+    0
+  );
 
-    // Filter by search term
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (campaign) =>
-          campaign.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          campaign.fromName.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
+  const openRate = totalSent > 0 ? (totalOpened / totalSent) * 100 : 0;
+  const clickRate = totalSent > 0 ? (totalClicks / totalSent) * 100 : 0;
 
-    // Filter by status
-    if (statusFilter !== "all") {
-      filtered = filtered.filter(
-        (campaign) => campaign.status === statusFilter
-      );
-    }
-
-    // Sort campaigns
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case "date":
-          return (
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
-        case "opened":
-          return b.emailsOpened - a.emailsOpened;
-        case "sent":
-          return b.emailsSent - a.emailsSent;
-        default:
-          return 0;
-      }
-    });
-
-    setFilteredCampaigns(filtered);
-  }, [campaigns, searchTerm, statusFilter, sortBy]);
-
-  const getStatusColor = (status: Campaign["status"]) => {
-    switch (status) {
-      case "sent":
-        return "bg-green-600";
-      case "testing":
-        return "bg-yellow-600";
-      case "draft":
-        return "bg-gray-600";
-      default:
-        return "bg-gray-600";
-    }
-  };
-
-  const getOpenRate = (sent: number, opened: number) => {
-    if (sent === 0) return 0;
-    return ((opened / sent) * 100).toFixed(1);
+  const handleCampaignClick = (campaignId: string) => {
+    navigate(`/campaigns/${campaignId}`);
   };
 
   return (
     <div className="space-y-6">
-      <div className="bg-zinc-900 rounded-lg p-6 border border-zinc-700">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-          <h2 className="text-2xl font-bold text-white mb-4 sm:mb-0">
-            Campaign Analytics
+      {/* Analytics Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="bg-gray-800 rounded-lg p-6">
+          <div className="text-2xl font-bold text-white">
+            {campaigns.length}
+          </div>
+          <div className="text-gray-400">Total Campaigns</div>
+        </div>
+        <div className="bg-gray-800 rounded-lg p-6">
+          <div className="text-2xl font-bold text-blue-400">
+            {totalSent.toLocaleString()}
+          </div>
+          <div className="text-gray-400">Emails Sent</div>
+        </div>
+        <div className="bg-gray-800 rounded-lg p-6">
+          <div className="text-2xl font-bold text-green-400">
+            {totalOpened.toLocaleString()}
+          </div>
+          <div className="text-gray-400">Emails Opened</div>
+          <div className="text-sm text-green-400">
+            {openRate.toFixed(1)}% open rate
+          </div>
+        </div>
+        <div className="bg-gray-800 rounded-lg p-6">
+          <div className="text-2xl font-bold text-yellow-400">
+            {totalClicks.toLocaleString()}
+          </div>
+          <div className="text-gray-400">Total Clicks</div>
+          <div className="text-sm text-yellow-400">
+            {clickRate.toFixed(1)}% click rate
+          </div>
+        </div>
+      </div>
+
+      {/* Campaigns List */}
+      <div className="bg-gray-800 rounded-lg overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-700">
+          <h2 className="text-xl font-semibold text-white">
+            Campaign Performance
           </h2>
-
-          {/* Filters and Search */}
-          <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-400 h-4 w-4" />
-              <input
-                type="text"
-                placeholder="Search campaigns..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-zinc-800 border border-zinc-600 rounded-md text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-              />
-            </div>
-
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 bg-zinc-800 border border-zinc-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-            >
-              <option value="all">All Status</option>
-              <option value="sent">Sent</option>
-              <option value="testing">Testing</option>
-              <option value="draft">Draft</option>
-            </select>
-
-            <select
-              value={sortBy}
-              onChange={(e) =>
-                setSortBy(e.target.value as "date" | "opened" | "sent")
-              }
-              className="px-3 py-2 bg-zinc-800 border border-zinc-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-            >
-              <option value="date">Sort by Date</option>
-              <option value="opened">Sort by Opens</option>
-              <option value="sent">Sort by Sent</option>
-            </select>
-          </div>
         </div>
-
-        {/* Summary Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="bg-zinc-800 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-zinc-400 text-sm">Total Campaigns</p>
-                <p className="text-2xl font-bold text-white">
-                  {campaigns.length}
-                </p>
-              </div>
-              <Mail className="h-8 w-8 text-yellow-400" />
-            </div>
-          </div>
-
-          <div className="bg-zinc-800 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-zinc-400 text-sm">Emails Sent</p>
-                <p className="text-2xl font-bold text-white">
-                  {campaigns
-                    .reduce((sum, c) => sum + c.emailsSent, 0)
-                    .toLocaleString()}
-                </p>
-              </div>
-              <TrendingUp className="h-8 w-8 text-green-400" />
-            </div>
-          </div>
-
-          <div className="bg-zinc-800 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-zinc-400 text-sm">Total Opens</p>
-                <p className="text-2xl font-bold text-white">
-                  {campaigns
-                    .reduce((sum, c) => sum + c.emailsOpened, 0)
-                    .toLocaleString()}
-                </p>
-              </div>
-              <Eye className="h-8 w-8 text-blue-400" />
-            </div>
-          </div>
-
-          <div className="bg-zinc-800 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-zinc-400 text-sm">Avg. Open Rate</p>
-                <p className="text-2xl font-bold text-white">
-                  {getOpenRate(
-                    campaigns.reduce((sum, c) => sum + c.emailsSent, 0),
-                    campaigns.reduce((sum, c) => sum + c.emailsOpened, 0)
-                  )}
-                  %
-                </p>
-              </div>
-              <Calendar className="h-8 w-8 text-purple-400" />
-            </div>
-          </div>
-        </div>
-
-        {/* Campaigns Table */}
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead>
-              <tr className="border-b border-zinc-700">
-                <th className="text-left py-3 px-4 text-zinc-400 font-medium">
+            <thead className="bg-gray-700">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                   Campaign
                 </th>
-                <th className="text-left py-3 px-4 text-zinc-400 font-medium">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="text-left py-3 px-4 text-zinc-400 font-medium">
-                  Date
-                </th>
-                <th className="text-right py-3 px-4 text-zinc-400 font-medium">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                   Sent
                 </th>
-                <th className="text-right py-3 px-4 text-zinc-400 font-medium">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                   Opened
                 </th>
-                <th className="text-right py-3 px-4 text-zinc-400 font-medium">
-                  Open Rate
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  Clicks
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  Rates
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  Date
                 </th>
               </tr>
             </thead>
-            <tbody>
-              {filteredCampaigns.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="text-center py-8 text-zinc-400">
-                    No campaigns found matching your criteria.
-                  </td>
-                </tr>
-              ) : (
-                filteredCampaigns.map((campaign) => (
+            <tbody className="divide-y divide-gray-700">
+              {campaigns.map((campaign) => {
+                const campaignOpenRate =
+                  campaign.emailsSent > 0
+                    ? (campaign.emailsOpened / campaign.emailsSent) * 100
+                    : 0;
+                const campaignClickRate =
+                  campaign.emailsSent > 0
+                    ? ((campaign.emailsClicked || 0) / campaign.emailsSent) *
+                      100
+                    : 0;
+
+                return (
                   <tr
-                    key={campaign.id}
-                    className="border-b border-zinc-700 hover:bg-zinc-800 transition-colors"
+                    key={campaign._id}
+                    onClick={() => handleCampaignClick(campaign?._id || "")}
+                    className="hover:bg-gray-700 cursor-pointer transition-colors"
                   >
-                    <td className="py-4 px-4">
+                    <td className="px-6 py-4">
                       <div>
-                        <h4 className="text-white font-medium">
+                        <div className="text-sm font-medium text-white truncate max-w-xs">
                           {campaign.subject}
-                        </h4>
-                        <p className="text-zinc-400 text-sm">
-                          From: {campaign.fromName}
-                        </p>
+                        </div>
+                        <div className="text-sm text-gray-400">
+                          {campaign.fromName}
+                        </div>
                       </div>
                     </td>
-                    <td className="py-4 px-4">
+                    <td className="px-6 py-4">
                       <span
-                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white ${getStatusColor(
-                          campaign.status
-                        )}`}
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          campaign.status === "sent"
+                            ? "bg-green-100 text-green-800"
+                            : campaign.status === "testing"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
                       >
                         {campaign.status.charAt(0).toUpperCase() +
                           campaign.status.slice(1)}
                       </span>
                     </td>
-                    <td className="py-4 px-4 text-gray-300">
-                      {new Date(campaign.createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="py-4 px-4 text-right text-white">
+                    <td className="px-6 py-4 text-sm text-white">
                       {campaign.emailsSent.toLocaleString()}
                     </td>
-                    <td className="py-4 px-4 text-right text-white">
+                    <td className="px-6 py-4 text-sm text-green-400">
                       {campaign.emailsOpened.toLocaleString()}
                     </td>
-                    <td className="py-4 px-4 text-right">
-                      <div className="flex items-center justify-end">
-                        <span className="text-white font-medium">
-                          {getOpenRate(
-                            campaign.emailsSent,
-                            campaign.emailsOpened
-                          )}
-                          %
-                        </span>
-                        <div className="ml-2 w-16 h-2 bg-zinc-600 rounded-full">
-                          <div
-                            className="h-2 bg-yellow-400 rounded-full"
-                            style={{
-                              width: `${Math.min(
-                                100,
-                                parseFloat(
-                                  String(
-                                    getOpenRate(
-                                      campaign.emailsSent,
-                                      campaign.emailsOpened
-                                    )
-                                  )
-                                )
-                              )}%`,
-                            }}
-                          ></div>
-                        </div>
+                    <td className="px-6 py-4 text-sm text-yellow-400">
+                      {(campaign.emailsClicked || 0).toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 text-sm">
+                      <div className="text-green-400">
+                        {campaignOpenRate.toFixed(1)}% open
+                      </div>
+                      <div className="text-yellow-400">
+                        {campaignClickRate.toFixed(1)}% click
                       </div>
                     </td>
+                    <td className="px-6 py-4 text-sm text-gray-400">
+                      {campaign.sentAt
+                        ? new Date(campaign.sentAt).toLocaleDateString()
+                        : new Date(campaign.createdAt).toLocaleDateString()}
+                    </td>
                   </tr>
-                ))
-              )}
+                );
+              })}
             </tbody>
           </table>
         </div>

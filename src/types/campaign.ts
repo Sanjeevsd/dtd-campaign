@@ -8,24 +8,54 @@ export interface CampaignImage {
 }
 
 export interface Campaign {
+  _id?: string;
   id: string;
   subject: string;
   fromName: string;
   htmlTemplate: string;
-  images?: CampaignImage[];
   createdAt: string;
   sentAt?: string;
   status: "draft" | "testing" | "sent";
   emailsSent: number;
   emailsOpened: number;
+  emailsClicked: number; // New field
   testEmails: string[];
+  images?: CampaignImage[];
 }
 
 export interface CampaignFormData {
-  fromName: string;
   subject: string;
+  fromName: string;
   htmlTemplate: string;
+  testEmails: string[];
   images: CampaignImage[];
+}
+
+// New interfaces for analytics
+export interface OpenedEmail {
+  Email: string;
+  createdAt: string;
+  ipAddress?: string;
+  userAgent?: string;
+}
+
+export interface LinkClickDocument {
+  originalUrl: string;
+  _id: string;
+  userAgent: string;
+  campaignId: string;
+  email: string;
+  createdAt: string;
+}
+
+export interface CampaignAnalytics {
+  campaignId: string;
+  openedEmails: OpenedEmail[];
+  clickedEmails: LinkClickDocument[];
+  totalOpens: number;
+  totalClicks: number;
+  uniqueOpens: number;
+  uniqueClicks: number;
 }
 
 export interface TestEmailData {

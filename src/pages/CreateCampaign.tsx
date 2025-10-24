@@ -14,6 +14,7 @@ const CreateCampaign: React.FC = () => {
     subject: "",
     htmlTemplate: "",
     images: [],
+    testEmails: [],
   });
 
   const handleSave = (data: CampaignFormData) => {
@@ -42,6 +43,7 @@ const CreateCampaign: React.FC = () => {
 
       // Append images if any
       campaignData.images.forEach((image) => {
+        //@ts-ignore
         formData.append(`emailpics`, image.file);
       });
       formData.append("data", JSON.stringify({ ...campaignData, emails }));
@@ -105,6 +107,7 @@ const CreateCampaign: React.FC = () => {
       subject: "",
       htmlTemplate: "",
       images: [],
+      testEmails: [],
     });
   };
 

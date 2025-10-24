@@ -18,6 +18,7 @@ const CampaignForm: React.FC<CampaignFormProps> = ({
     subject: initialData.subject || "",
     htmlTemplate: initialData.htmlTemplate || "",
     images: initialData.images || [],
+    testEmails: initialData.testEmails || [],
   });
   const [errors, setErrors] = useState<Partial<CampaignFormData>>({});
 

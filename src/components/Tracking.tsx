@@ -7,6 +7,7 @@ export default function TrackRedirect() {
   const [message, setMessage] = useState("Redirecting...");
   const encodedUrl = searchParams.get("url");
   const campaignId = searchParams.get("id");
+  const email = searchParams.get("email");
   console.log("Encoded URL:", encodedUrl, "Campaign ID:", campaignId);
   useEffect(() => {
     async function trackAndRedirect() {
@@ -16,7 +17,7 @@ export default function TrackRedirect() {
       }
 
       const response = await api.get(
-        `/admin/click-tracking?id=${campaignId}&url=${encodedUrl}`
+        `/admin/click-tracking?id=${campaignId}&url=${encodedUrl}&email=${email}`
       );
       const data = await response.data;
       console.log("Tracking response:", data);
