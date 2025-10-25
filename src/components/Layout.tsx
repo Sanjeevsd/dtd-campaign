@@ -36,7 +36,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="flex items-center space-x-6">
               <nav className="py-2 flex space-x-8">
                 <Link
-                  to="/"
+                  to="/create-campaign"
                   className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     isActive("/")
                       ? "bg-yellow-400 text-black"
