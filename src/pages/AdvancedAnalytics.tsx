@@ -63,88 +63,199 @@ const AdvancedAnalytics: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   // Mock data for advanced analytics (fallback)
-  //   const mockAdvancedData: AdvancedAnalyticsData = useMemo(
-  //     () => ({
-  //       locationPerformance: [
-  //         {
-  //           location: "Downtown",
-  //           sent: 1200,
-  //           opened: 480,
-  //           clicked: 96,
-  //           openRate: 40,
-  //           clickRate: 8,
-  //         },
-  //         {
-  //           location: "Suburbs",
-  //           sent: 850,
-  //           opened: 297,
-  //           clicked: 51,
-  //           openRate: 35,
-  //           clickRate: 6,
-  //         },
-  //         {
-  //           location: "Waterfront",
-  //           sent: 650,
-  //           opened: 325,
-  //           clicked: 78,
-  //           openRate: 50,
-  //           clickRate: 12,
-  //         },
-  //         {
-  //           location: "Business District",
-  //           sent: 980,
-  //           opened: 392,
-  //           clicked: 59,
-  //           openRate: 40,
-  //           clickRate: 6,
-  //         },
-  //         {
-  //           location: "Historic District",
-  //           sent: 420,
-  //           opened: 189,
-  //           clicked: 33,
-  //           openRate: 45,
-  //           clickRate: 8,
-  //         },
-  //       ],
-  //       projectPerformance: [
-  //         {
-  //           project: "Luxury Condos",
-  //           campaigns: 15,
-  //           totalSent: 2100,
-  //           totalOpened: 903,
-  //           totalClicked: 189,
-  //           averageOpenRate: 43,
-  //           averageClickRate: 9,
-  //         },
-  //         {
-  //           project: "Family Homes",
-  //           campaigns: 12,
-  //           totalSent: 1800,
-  //           totalOpened: 630,
-  //           totalClicked: 108,
-  //           averageOpenRate: 35,
-  //           averageClickRate: 6,
-  //         },
-  //         {
-  //           project: "Starter Apartments",
-  //           campaigns: 8,
-  //           totalSent: 1200,
-  //           totalOpened: 420,
-  //           totalClicked: 60,
-  //           averageOpenRate: 35,
-  //           averageClickRate: 5,
-  //         },
-  //         {
-  //           project: "Premium Villas",
-  //           campaigns: 6,
-  //           totalSent: 900,
-  //           totalOpened: 450,
-  //           totalClicked: 108,
-  //           averageOpenRate: 50,
-  //           averageClickRate: 12,
-  //         },
-  //       ],
+  const mockAdvancedData: AdvancedAnalyticsData = useMemo(
+    () => ({
+      locationPerformance: [
+        {
+          location: "Downtown",
+          sent: 1200,
+          opened: 480,
+          clicked: 96,
+          openRate: 40,
+          clickRate: 8,
+        },
+        {
+          location: "Suburbs",
+          sent: 850,
+          opened: 297,
+          clicked: 51,
+          openRate: 35,
+          clickRate: 6,
+        },
+        {
+          location: "Waterfront",
+          sent: 650,
+          opened: 325,
+          clicked: 78,
+          openRate: 50,
+          clickRate: 12,
+        },
+        {
+          location: "Business District",
+          sent: 980,
+          opened: 392,
+          clicked: 59,
+          openRate: 40,
+          clickRate: 6,
+        },
+        {
+          location: "Historic District",
+          sent: 420,
+          opened: 189,
+          clicked: 33,
+          openRate: 45,
+          clickRate: 8,
+        },
+      ],
+      projectPerformance: [
+        {
+          project: "Luxury Condos",
+          campaigns: 15,
+          totalSent: 2100,
+          totalOpened: 903,
+          totalClicked: 189,
+          averageOpenRate: 43,
+          averageClickRate: 9,
+        },
+        {
+          project: "Family Homes",
+          campaigns: 12,
+          totalSent: 1800,
+          totalOpened: 630,
+          totalClicked: 108,
+          averageOpenRate: 35,
+          averageClickRate: 6,
+        },
+        {
+          project: "Starter Apartments",
+          campaigns: 8,
+          totalSent: 1200,
+          totalOpened: 420,
+          totalClicked: 60,
+          averageOpenRate: 35,
+          averageClickRate: 5,
+        },
+        {
+          project: "Premium Villas",
+          campaigns: 6,
+          totalSent: 900,
+          totalOpened: 450,
+          totalClicked: 108,
+          averageOpenRate: 50,
+          averageClickRate: 12,
+        },
+      ],
+      priceRangeAnalytics: [
+        {
+          priceRange: "$0-500K",
+          campaigns: 8,
+          totalSent: 1200,
+          totalOpened: 420,
+          totalClicked: 60,
+          averageOpenRate: 35,
+          averageClickRate: 5,
+        },
+        {
+          priceRange: "$500K-1M",
+          campaigns: 12,
+          totalSent: 1800,
+          totalOpened: 630,
+          totalClicked: 108,
+          averageOpenRate: 35,
+          averageClickRate: 6,
+        },
+        {
+          priceRange: "$1M-2M",
+          campaigns: 15,
+          totalSent: 2100,
+          totalOpened: 903,
+          totalClicked: 189,
+          averageOpenRate: 43,
+          averageClickRate: 9,
+        },
+        {
+          priceRange: "$2M+",
+          campaigns: 6,
+          totalSent: 900,
+          totalOpened: 450,
+          totalClicked: 108,
+          averageOpenRate: 50,
+          averageClickRate: 12,
+        },
+      ],
+      bedroomAnalytics: [
+        {
+          bedrooms: 1,
+          campaigns: 10,
+          totalSent: 1500,
+          totalOpened: 525,
+          totalClicked: 75,
+          averageOpenRate: 35,
+          averageClickRate: 5,
+        },
+        {
+          bedrooms: 2,
+          campaigns: 15,
+          totalSent: 2250,
+          totalOpened: 787,
+          totalClicked: 135,
+          averageOpenRate: 35,
+          averageClickRate: 6,
+        },
+        {
+          bedrooms: 3,
+          campaigns: 12,
+          totalSent: 1800,
+          totalOpened: 774,
+          totalClicked: 162,
+          averageOpenRate: 43,
+          averageClickRate: 9,
+        },
+        {
+          bedrooms: 4,
+          campaigns: 8,
+          totalSent: 1200,
+          totalOpened: 600,
+          totalClicked: 144,
+          averageOpenRate: 50,
+          averageClickRate: 12,
+        },
+      ],
+      timeSeriesData: [
+        { date: "2024-01-01", opens: 45, clicks: 8, sent: 120 },
+        { date: "2024-01-02", opens: 52, clicks: 12, sent: 130 },
+        { date: "2024-01-03", opens: 38, clicks: 6, sent: 95 },
+        { date: "2024-01-04", opens: 61, clicks: 15, sent: 140 },
+        { date: "2024-01-05", opens: 48, clicks: 9, sent: 115 },
+        { date: "2024-01-06", opens: 55, clicks: 11, sent: 125 },
+        { date: "2024-01-07", opens: 42, clicks: 7, sent: 105 },
+      ],
+      devicePerformance: [
+        {
+          device: "desktop",
+          opens: 1250,
+          clicks: 187,
+          openRate: 45,
+          clickRate: 15,
+        },
+        {
+          device: "mobile",
+          opens: 980,
+          clicks: 118,
+          openRate: 38,
+          clickRate: 12,
+        },
+        {
+          device: "tablet",
+          opens: 320,
+          clicks: 32,
+          openRate: 35,
+          clickRate: 10,
+        },
+      ],
+    }),
+    []
+  );
   //       priceRangeAnalytics: [
   //         {
   //           priceRange: "$0-500K",
@@ -293,11 +404,11 @@ const AdvancedAnalytics: React.FC = () => {
       }
       setError(errorMessage);
       // Fallback to mock data on API error
-      //   setAnalyticsData(mockAdvancedData);
+      setAnalyticsData(mockAdvancedData);
     } finally {
       setLoading(false);
     }
-  }, [filters]);
+  }, [filters, mockAdvancedData]);
 
   // Fetch analytics data on component mount and filter changes
   useEffect(() => {
@@ -305,7 +416,30 @@ const AdvancedAnalytics: React.FC = () => {
   }, [fetchAnalyticsData]);
 
   const filteredData = useMemo(() => {
-    return analyticsData;
+    if (!analyticsData) return null;
+
+    // Sort all analytics arrays by click rate (highest to lowest)
+    return {
+      ...analyticsData,
+      locationPerformance: [...analyticsData.locationPerformance].sort(
+        (a, b) => b.clicked - a.clicked
+      ),
+      projectPerformance: [...analyticsData.projectPerformance].sort(
+        (a, b) => b.totalClicked - a.totalClicked
+      ),
+      priceRangeAnalytics: [...analyticsData.priceRangeAnalytics].sort(
+        (a, b) => b.totalClicked - a.totalClicked
+      ),
+      bedroomAnalytics: [...analyticsData.bedroomAnalytics].sort(
+        (a, b) => b.totalClicked - a.totalClicked
+      ),
+      devicePerformance: [...analyticsData.devicePerformance].sort(
+        //@ts-ignore
+        (a, b) => b?.clicked - a?.clicked
+      ),
+      // Keep timeSeriesData in chronological order (don't sort by click rate)
+      timeSeriesData: analyticsData.timeSeriesData,
+    };
   }, [analyticsData]);
 
   const handleFilterChange = (newFilters: Partial<AdvancedFilters>) => {
@@ -697,6 +831,7 @@ const AdvancedAnalytics: React.FC = () => {
                     fill="#82ca9d"
                     name="Avg Click Rate %"
                   />
+                  <Bar dataKey="totalClicked" fill="#82ca9d" name="Clicks" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
