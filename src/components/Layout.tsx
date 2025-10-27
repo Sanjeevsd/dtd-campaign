@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Mail, BarChart3, Send, LogOut, User } from "lucide-react";
+import { Mail, BarChart3, Send, LogOut, User, TrendingUp } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 
 interface LayoutProps {
@@ -56,6 +56,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 >
                   <BarChart3 className="h-4 w-4" />
                   <span>Track Campaigns</span>
+                </Link>
+                <Link
+                  to="/advanced-analytics"
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isActive("/advanced-analytics")
+                      ? "bg-yellow-400 text-black"
+                      : "border border-gray-50 text-zinc-300 hover:text-white hover:bg-zinc-800"
+                  }`}
+                >
+                  <TrendingUp className="h-4 w-4" />
+                  <span>Advanced Analytics</span>
                 </Link>
               </nav>
 

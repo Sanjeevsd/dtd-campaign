@@ -11,6 +11,7 @@ import Layout from "./components/Layout";
 import Campaigns from "./pages/Campaigns";
 import CampaignDetail from "./pages/CampaignDetail";
 import CreateCampaign from "./pages/CreateCampaign";
+import AdvancedAnalytics from "./pages/AdvancedAnalytics";
 import Tracking from "./components/Tracking";
 
 function App() {
@@ -58,6 +59,16 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <CreateCampaign />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/advanced-analytics"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <AdvancedAnalytics />
                   </Layout>
                 </ProtectedRoute>
               }
